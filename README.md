@@ -19,8 +19,8 @@ shinysocks.exe 127.0.0.1 7000     <-- will listen only internally
 ```
 * on Linux attacker machine
 
-
-```proxychains curl x.x.x.x    <-- address on remote internal network
+```
+proxychains curl x.x.x.x    <-- address on remote internal network
 ```
 
 
