@@ -9,7 +9,7 @@
 
 Usage: can be used when pivoting inside an internal unreachable network 
 
-*on Windows target machine:
+* on Windows target machine:
 
 ```
 shinysocks.exe     <-- default will listen on 0.0.0.0 1080
