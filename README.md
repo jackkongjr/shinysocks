@@ -1,5 +1,23 @@
 # ShinySOCKS
 
+
+## Modified version to be more light, 
+## hoping to be usefull to pentesters 
+- removed config file
+- removed log file option
+- added command line  "interface port"
+
+Usage:
+
+```
+shinysocks.exe     <-- default will listen on 0.0.0.0 1080
+
+shinysocks.exe 127.0.0.1 7000     <-- will listen only internally 
+
+```
+
+
+
 ## Mission Statement
 
 *To create a small, ultrafast SOCKS proxy server.
