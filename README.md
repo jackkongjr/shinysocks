@@ -7,7 +7,9 @@
 - removed log file option
 - added command line  "interface port"
 
-Usage:
+Usage: can be used when pivoting inside an internal unreachable network 
+
+*on Windows target machine:
 
 ```
 shinysocks.exe     <-- default will listen on 0.0.0.0 1080
@@ -15,6 +17,14 @@ shinysocks.exe     <-- default will listen on 0.0.0.0 1080
 shinysocks.exe 127.0.0.1 7000     <-- will listen only internally 
 
 ```
+* on Linux attacker machine
+
+
+```proxychains curl x.x.x.x    <-- address on remote internal network
+```
+
+
+
 
 
 
