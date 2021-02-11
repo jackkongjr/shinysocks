@@ -1,8 +1,8 @@
 # ShinySOCKS
 
 
-## Modified version to be more light, 
-## hoping to be usefull to pentesters 
+## Modified ligther version 
+## hoping will be usefull to pentesters 
 - removed config file
 - removed log file option
 - added command line  "interface port"
