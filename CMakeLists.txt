@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(shinysocks)
 
+set(BOOST_ROOT  C:\\local\\boost_1_66_0_2)
+set(BOOST_LIBRARYDIR C:\\local\\boost_1_66_0_2\\lib64-msvc-14.1)
 
 set(Boost_USE_MULTITHREADED ON)
 if (UNIX)

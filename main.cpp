@@ -40,95 +40,54 @@ void SleepUntilDoomdsay()
     BOOST_LOG_TRIVIAL(debug) << "Main thread is awake";
 }
 
+
+char *host_interface = "0.0.0.0";
+char *local_port = "1080";
+
+
 int main(int argc, char **argv) {
 
+	
+
+	if (argc > 1) {
+		host_interface = argv[1];
+		local_port = argv[2];
+	}
     namespace po = boost::program_options;
-    namespace pt = boost::property_tree;
+    
     bool run_as_daemon = false;
 
-    pt::ptree opts;
+	
+	
+    
     vector<unique_ptr<Listener>> listeners;
-
-    {
-        std::string conf_file = "shinysocks.conf";
-
-        po::options_description general("General Options");
-
-        general.add_options()
-            ("help,h", "Print help and exit")
-            ("config-file,c",
-                po::value<string>(&conf_file)->default_value(conf_file),
-                "Configuration file")
-#ifndef WIN32
-            ("daemon",  po::value<bool>(&run_as_daemon), "Run as a system daemon")
-#endif
-            ;
-
-        po::options_description cmdline_options;
-        cmdline_options.add(general);
-
-        po::variables_map vm;
-        po::store(po::parse_command_line(argc, argv, cmdline_options), vm);
-        po::notify(vm);
-
-        if (vm.count("help")) {
-            cout << GetProgramName() << ' ' << GetProgramVersion()
-				<< cmdline_options << endl;
-            return -1;
-        }
-
-        if (!boost::filesystem::exists(conf_file)) {
-            BOOST_LOG_TRIVIAL(error) << "*** The configuration-file '"
-                << conf_file
-                << "' does not exist.";
-            return -1;
-        }
-        read_info(conf_file, opts);
-
-        if (auto log_file = opts.get_optional<string>("log.file")) {
-            cout << "Opening log-file: " << *log_file << endl;
-            //boost::log::add_file_log(log_file->c_str());
-
-            boost::log::add_file_log(
-                boost::log::keywords::file_name = *log_file,
-                boost::log::keywords::target = "boost_logs",
-                boost::log::keywords::format = "%TimeStamp% %ThreadID% %Severity%: %Message%",
-                boost::log::keywords::auto_flush = true
-            );
-
-            boost::log::add_common_attributes();
-
-            boost::log::core::get()->set_filter (
-                boost::log::trivial::severity >= boost::log::trivial::debug);
-        }
-    }
+ 
 
     Manager::Conf conf;
-    if (auto threads = opts.get_optional<int>("system.io-threads")) {
-        conf.io_threads = *threads;
-    }
+ 
+    conf.io_threads =4;
+    
 
     // Start acceptor(s)
     Manager manager(conf);
     {
         boost::asio::io_service io_service;
-        for(auto &node :  opts.get_child("interfaces")) {
+         
+		auto host = host_interface; //  node.second.get<string>("hostname");
+		auto port = local_port; // node.second.get<string>("port");
 
-            auto host = node.second.get<string>("hostname");
-            auto port = node.second.get<string>("port");
+        BOOST_LOG_TRIVIAL(error) << "Resolving host=" << host << ", port=" << port;
 
-            BOOST_LOG_TRIVIAL(error) << "Resolving host=" << host << ", port=" << port;
+        tcp::resolver resolver(io_service);
+        auto address_it = resolver.resolve({host, port});
+        decltype(address_it) addr_end;
 
-            tcp::resolver resolver(io_service);
-            auto address_it = resolver.resolve({host, port});
-            decltype(address_it) addr_end;
-
-            for(; address_it != addr_end; ++address_it) {
-                auto iface = make_unique<Listener>(manager, *address_it);
-                iface->StartAccepting();
-                listeners.push_back(move(iface));
-            }
+        for(; address_it != addr_end; ++address_it) {
+            auto iface = make_unique<Listener>(manager, *address_it);
+            iface->StartAccepting();
+            listeners.push_back(move(iface));
         }
+         
     }
 
 #ifndef WIN32
