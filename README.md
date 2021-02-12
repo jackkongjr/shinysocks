@@ -1,11 +1,11 @@
 # ShinySOCKS
 
 
-## Modified ligther version 
-## hoping will be usefull to pentesters 
-- removed config file
+## Ligther version of shinysocks project
+## usefull to pentesters 
+- removed config file option
 - removed log file option
-- added command line  "interface port"
+- added command line  "interface port" parameters
 
 Usage: can be used when pivoting inside an internal unreachable network 
 
